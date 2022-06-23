@@ -29,3 +29,18 @@
     align-items: center;
 }
 
+#board > [data-status="hidden"] {
+    background-color: lightgray;
+}
+
+#board > [data-status="marked"] {
+    background-color: green;
+}
+
+#board > [data-status="revealed"] {
+    background-color: darkgrey;
+}
+
+#board > [data-status="bombed"] {
+    background-color: red;
+}
