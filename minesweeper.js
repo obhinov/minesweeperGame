@@ -115,17 +115,22 @@ function revealTiles(tile){
         tile.dataset.status = TILE_STATUS.R;
         
         // Reveal tiles within 3x3 boundary, capped at the board limit
-        const xlower = Math.max(tile.dataset.xCord - 1, 0)
-        const xupper = Math.min(tile.dataset.xCord + 1, numXs - 1);
-        const ylower = Math.max(tile.dataset.yCord - 1, 0)
-        const yupper = Math.min(tile.dataset.yCord + 1, numYs - 1);
+        const parsedX = parseInt(tile.dataset.xCord)
+        const parsedY = parseInt(tile.dataset.yCord)
+        const xlower = Math.max(parsedX - 1, 0);
+        const xupper = Math.min(parsedX + 1, numXs - 1);
+        const ylower = Math.max(parsedY - 1, 0);
+        const yupper = Math.min(parsedY + 1, numYs - 1);
+
+        console.log(tile.dataset.xCord + 1)
+        console.log("xbound " + xlower + xupper + " ybound " + ylower + yupper);
 
         for (let xi = xlower; xi <= xupper; xi++) {
             for (let yi = ylower; yi <= yupper; yi++){
                 tileToReveal = board[yi][xi]
                 // Only reveal tiles that are hidden (prevents infinite recursion)
                 if (tileToReveal.dataset.status == TILE_STATUS.H){
-                    revealTiles(board[yi][xi])
+                    revealTiles(tileToReveal);
                 }
             }
         }
