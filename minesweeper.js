@@ -60,8 +60,6 @@ function mineLocationsGenerator(){
     return mineLocations;
 };
 
-
-
 function tileClicked() {
     if (!gameOver){
         tile = this;
@@ -99,6 +97,12 @@ function flagClicked(evento) {
 // tile reveal function
 function revealTiles(tile){
 
+    // Obviously don't reveal it if it's a mine
+    if (checkTileForMine(tile.dataset.xCord, tile.dataset.yCord)){
+        return;
+    }
+    
+    // Reveal only this tile if it's adjacent to a mine
     numAdjacentMines = adjacentMinesExist(tile);
     if (numAdjacentMines>0){
         tile.dataset.status = TILE_STATUS.R;
@@ -106,9 +110,25 @@ function revealTiles(tile){
         return;
     }
 
+    // Otherwise, reveal adjacent
     else if (numAdjacentMines==0){
         tile.dataset.status = TILE_STATUS.R;
-        //document.get
+        
+        // Reveal tiles within 3x3 boundary, capped at the board limit
+        const xlower = Math.max(tile.dataset.xCord - 1, 0)
+        const xupper = Math.min(tile.dataset.xCord + 1, numXs - 1);
+        const ylower = Math.max(tile.dataset.yCord - 1, 0)
+        const yupper = Math.min(tile.dataset.yCord + 1, numYs - 1);
+
+        for (let xi = xlower; xi <= xupper; xi++) {
+            for (let yi = ylower; yi <= yupper; yi++){
+                tileToReveal = board[yi][xi]
+                // Only reveal tiles that are hidden (prevents infinite recursion)
+                if (tileToReveal.dataset.status == TILE_STATUS.H){
+                    revealTiles(board[yi][xi])
+                }
+            }
+        }
     }
 
     // TO WRITE: go through process of revealing tiles.
